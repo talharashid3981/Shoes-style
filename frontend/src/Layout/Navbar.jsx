@@ -11,9 +11,10 @@ import {
 } from 'lucide-react';
 import useAuth from '../hooks/useAuth';
 import useCart from '../hooks/useCart';
-import logo from '../assets/logo.png';
+import logo from '../assets/Logo.png';
 
 const Navbar = () => {
+  
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);

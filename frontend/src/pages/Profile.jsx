@@ -9,10 +9,10 @@ import {
   CheckCircle,
   XCircle,
   Loader,
-  ShieldCheck,
+  ShieldCheck,add
   Mail,
 } from 'lucide-react';
-import notificationToaster from "../utils/Toast.jsx.jsx";
+import notificationToaster from "../utils/Toast.jsx";
 import useAuth from '../hooks/useAuth';
 
 // ─── You need to import/expose these from your authService or useAuth ─────────

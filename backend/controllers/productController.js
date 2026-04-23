@@ -71,6 +71,7 @@ export const getProducts = async (req, res) => {
     if (req.query.label) {
       filter.label = req.query.label;
     }
+    
 
     // Allowed sort fields to prevent arbitrary sort injection
     const ALLOWED_SORTS = ['-createdAt', 'createdAt', 'price', '-price', '-soldCount', '-rating'];

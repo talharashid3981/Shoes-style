@@ -7,20 +7,16 @@ import { sendEmail } from '../utils/sendEmail.js';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-// ✅ FIX: Use atomic counter for order ID — not timestamp+random
-// Uses MongoDB findOneAndUpdate with $inc to get a guaranteed unique sequential number
 const generateOrderId = async () => {
   const Counter = (await import('../models/Counter.js')).default;
   const counter = await Counter.findOneAndUpdate(
     { name: 'orderId' },
     { $inc: { seq: 1 } },
-    { new: true, upsert: true }
+    { returnDocument: 'after', upsert: true } // ✅ fixed deprecated `new: true`
   );
-  // Format: SOLE-000001, SOLE-000002, etc.
   return `SOLE-${String(counter.seq).padStart(6, '0')}`;
 };
 
-// ✅ Basic email format validation
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 // ─── Checkout ─────────────────────────────────────────────────────────────────
@@ -72,9 +68,7 @@ export const checkout = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Your cart is empty' });
     }
 
-    // ─── Validate & atomically decrement stock ────────────────────────────
-    // ✅ FIX: Use $inc for atomic stock decrement to prevent race conditions.
-    // First pass: validate all items. Second pass: atomically update stock.
+    // ─── Validate stock ───────────────────────────────────────────────────
     for (const item of cart.items) {
       const product = item.product;
       if (!product || !product.isActive) {
@@ -95,8 +89,7 @@ export const checkout = async (req, res) => {
       }
     }
 
-    // ✅ Atomic stock decrement using MongoDB arrayFilters
-    // This prevents race conditions — two requests can't both decrement past 0
+    // ─── Atomic stock decrement ───────────────────────────────────────────
     for (const item of cart.items) {
       const result = await Product.findOneAndUpdate(
         {
@@ -120,34 +113,37 @@ export const checkout = async (req, res) => {
             { 'v.color': item.variant.color },
             { 's.size': item.variant.size },
           ],
-          new: true,
+          returnDocument: 'after', // ✅ fixed deprecated `new: true`
         }
       );
 
       if (!result) {
-        // Stock was depleted between validation and update — another request got it first
         return res.status(409).json({
           success: false,
           message: `Stock for ${item.product.name} (${item.variant.color} / ${item.variant.size}) was just depleted. Please update your cart.`,
         });
       }
 
-      // Recalculate totalStock
-      await Product.findByIdAndUpdate(item.product._id, [
-        {
-          $set: {
-            totalStock: {
-              $sum: {
-                $map: {
-                  input: '$variants',
-                  as: 'v',
-                  in: { $sum: '$$v.sizes.stock' },
+      // ✅ FIX: Pass { updatePipeline: true } when using an aggregation pipeline array
+      await Product.findByIdAndUpdate(
+        item.product._id,
+        [
+          {
+            $set: {
+              totalStock: {
+                $sum: {
+                  $map: {
+                    input: '$variants',
+                    as: 'v',
+                    in: { $sum: '$$v.sizes.stock' },
+                  },
                 },
               },
             },
           },
-        },
-      ]);
+        ],
+        { updatePipeline: true } // ✅ THIS was the missing option causing the 500 error
+      );
     }
 
     // ─── Calculate totals ─────────────────────────────────────────────────
@@ -192,16 +188,18 @@ export const checkout = async (req, res) => {
         price: item.price,
       })),
       shippingAddress: normalizedShipping,
-      billingAddress: billingAddress ? {
-        name: billingAddress.name || normalizedShipping.name,
-        addressLine1: billingAddress.addressLine1 || billingAddress.street,
-        addressLine2: billingAddress.addressLine2 || '',
-        city: billingAddress.city,
-        state: billingAddress.state,
-        postalCode: billingAddress.postalCode || billingAddress.zipCode,
-        country: billingAddress.country,
-        phone: billingAddress.phone,
-      } : normalizedShipping,
+      billingAddress: billingAddress
+        ? {
+            name: billingAddress.name || normalizedShipping.name,
+            addressLine1: billingAddress.addressLine1 || billingAddress.street,
+            addressLine2: billingAddress.addressLine2 || '',
+            city: billingAddress.city,
+            state: billingAddress.state,
+            postalCode: billingAddress.postalCode || billingAddress.zipCode,
+            country: billingAddress.country,
+            phone: billingAddress.phone,
+          }
+        : normalizedShipping,
       paymentMethod: 'COD',
       subtotal,
       tax,
@@ -270,7 +268,6 @@ export const checkout = async (req, res) => {
           `,
         });
       } catch (emailErr) {
-        // Don't fail the order if email fails — just log it
         console.error('Order confirmation email failed:', emailErr.message);
       }
     }
@@ -293,9 +290,14 @@ export const checkout = async (req, res) => {
         createdAt: order.createdAt,
       },
     });
-
   } catch (error) {
     console.error('Checkout error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+
+
+
+

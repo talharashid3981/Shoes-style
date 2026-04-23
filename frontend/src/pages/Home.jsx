@@ -11,7 +11,7 @@ import { getProductsAPI } from '../services/productService';
 import { getActiveBannersAPI } from '../services/bannerService';
 import { getCategoriesAPI } from '../services/adminService';
 import { subscribeAPI } from '../services/newsletterService';
-import Toast from '../utils/Toast';
+import Toast from '../utils/Toast.jsx';
 
 const FontInjector = () => {
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import Toast from "../utils/Toast";
+import Toast from "../utils/Toast.jsx.jsx";
 
 const AuthSuccess = () => {
   const { getCurrentUser } = useAuth();

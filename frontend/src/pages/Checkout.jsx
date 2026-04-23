@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import useCart from '../hooks/useCart';
 import { checkoutAPI } from '../services/orderService';
-import Toast from '../utils/Toast';
+import Toast from '../utils/Toast.jsx';
 import { MapPin, Phone, Mail, Package, CreditCard, Truck } from 'lucide-react';
 
 const Checkout = () => {

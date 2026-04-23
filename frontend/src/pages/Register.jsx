@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { FcGoogle } from "react-icons/fc";
 import { RiEyeLine, RiEyeOffLine, RiLockLine, RiMailLine, RiUserLine } from "react-icons/ri";
-import Toast from "../utils/Toast";
+import Toast from "../utils/Toast.jsx";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");

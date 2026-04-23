@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   Mail,
 } from 'lucide-react';
-import notificationToaster from "../utils/toast";
+import notificationToaster from "../utils/Toast.jsx.jsx";
 import useAuth from '../hooks/useAuth';
 
 // ─── You need to import/expose these from your authService or useAuth ─────────

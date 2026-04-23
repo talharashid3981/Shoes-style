@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { RiEyeLine, RiEyeOffLine, RiLockLine } from "react-icons/ri";
-import Toast from "../utils/Toast";
+import Toast from "../utils/Toast.jsx";
 import useAuth from "../hooks/useAuth";
 
 const ResetPasswordPage = () => {

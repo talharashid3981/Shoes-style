@@ -11,7 +11,7 @@ import useWishlist from '../hooks/useWishlist';
 import useAuth from '../hooks/useAuth';
 import { getProductReviewsAPI, getMyProductReviewAPI, createReviewAPI } from '../services/reviewService';
 import { getRelatedProductsAPI } from '../services/productService';
-import Toast from '../utils/Toast';
+import Toast from '../utils/Toast.jsx';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

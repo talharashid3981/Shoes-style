@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { RiMailLine, RiArrowLeftLine } from "react-icons/ri";
-import Toast from "../utils/Toast";
+import Toast from "../utils/Toast.jsx";
 import useAuth from "../hooks/useAuth";
 
 const ForgotPasswordPage = () => {

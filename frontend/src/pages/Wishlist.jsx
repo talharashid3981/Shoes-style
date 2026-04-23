@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Trash2, Star } from 'lucide-react';
 import useWishlist from '../hooks/useWishlist';
 import useCart from '../hooks/useCart';
-import Toast from '../utils/Toast';
+import Toast from '../utils/Toast.jsx';
 
 const Wishlist = () => {
   const { items, count, isLoading, fetchWishlist, removeFromWishlist, clearAllWishlist } = useWishlist();

@@ -21,7 +21,7 @@ import {
   getAllReviewsAPI, updateReviewStatusAPI,
 } from "../../services/adminService";
 import { createCampaignAPI } from "../../services/newsletterService";
-import Toast from "../../utils/Toast";
+import Toast from "../../utils/Toast.jsx";
 
 // ─── Shared helpers ────────────────────────────────────────────────────────────
 

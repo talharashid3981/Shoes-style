@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, X } from 'lucide-react';
 import useCart from '../hooks/useCart';
-import Toast from '../utils/Toast';
+import Toast from '../utils/Toast.jsx';
 
 const Cart = () => {
   const { items, totalPrice, totalItems, coupon, discount, isLoading, fetchCart, updateQuantity, removeItem, applyCoupon, removeCoupon } = useCart();

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { FcGoogle } from "react-icons/fc";
 import { RiEyeLine, RiEyeOffLine, RiLockLine, RiMailLine } from "react-icons/ri";
-import notificationToaster from "../utils/Toast.jsx";
+import notificationToaster from "../utils/Toast.jsx.jsx";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");

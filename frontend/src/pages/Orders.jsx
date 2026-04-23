@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Package, Eye, Calendar, Truck, CheckCircle, XCircle, Clock } from 'lucide-react';
 import useOrders from "../hooks/useOrders";
-import Toast from "../utils/Toast";
+import Toast from "../utils/Toast.jsx";
 
 const Orders = () => {
   const { orders, total, page, pages, isLoading, fetchMyOrders, cancelOrder } =

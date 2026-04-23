@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Package, Truck, MapPin, CreditCard, Calendar, Download, CheckCircle, XCircle } from 'lucide-react';
 import useOrders from '../hooks/useOrders';
-import Toast from '../utils/Toast';
+import Toast from '../utils/Toast.jsx';
 
 const OrderDetails = () => {
   const { id } = useParams();

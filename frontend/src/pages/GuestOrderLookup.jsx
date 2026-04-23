@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package, Mail, Hash, Search } from 'lucide-react';
 import { guestOrderLookupAPI } from '../services/orderService';
-import Toast from '../utils/Toast';
+import Toast from '../utils/Toast.jsx';
 
 const GuestOrderLookup = () => {
   const [orderId, setOrderId] = useState('');

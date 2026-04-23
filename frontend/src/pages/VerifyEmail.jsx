@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation,Link } from "react-router-dom";
-import Toast from "../utils/Toast";
+import Toast from "../utils/Toast.jsx";
 import { verifyEmailAPI, resendVerificationAPI } from "../services/authService";
 
 const VerifyEmailPage = () => {

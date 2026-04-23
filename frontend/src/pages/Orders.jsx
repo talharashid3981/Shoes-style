@@ -117,7 +117,7 @@ const Orders = () => {
                     <img
                       src={
                         item.image ||
-                        item.product?.images?.[0] ||
+                        item.product?.images?.[0]?.url ||
                         "https://via.placeholder.com/60"
                       }
                       alt={item.name}
@@ -130,7 +130,7 @@ const Orders = () => {
                         {item.quantity}
                       </p>
                       <p className="text-sm font-medium">
-                        ₹{item.price * item.quantity}
+                        Rs. {(item.price * item.quantity).toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -147,10 +147,10 @@ const Orders = () => {
                 <div>
                   <p className="text-sm text-gray-500">Total Amount</p>
                   <p className="text-xl font-bold text-gray-900">
-                    ₹{order.total}
+                    Rs. {order.total}
                   </p>
                 </div>
-                {order.status === "pending" && (
+                {order.orderStatus === "pending" && (
                   <button
                     onClick={() => handleCancelOrder(order._id)}
                     disabled={cancellingId === order._id}

@@ -47,7 +47,7 @@ const Profile = () => {
     city: '',
     state: '',
     postalCode: '',
-    country: 'India',
+    country: 'Pakistan',
     phone: '',
     isDefault: false,
   });
@@ -128,7 +128,7 @@ const Profile = () => {
       city: '',
       state: '',
       postalCode: '',
-      country: 'India',
+      country: 'Pakistan',
       phone: '',
       isDefault: false,
     });

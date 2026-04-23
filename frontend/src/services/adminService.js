@@ -1,7 +1,7 @@
-// src/services/admin.service.js
+// src/services/adminService.js
 import api from "./api";
 
-// Dashboard
+// ─── Dashboard ─────────────────────────────────────────────────────────────────
 export const getDashboardStatsAPI = async () => {
   const response = await api.get("/admin/stats");
   return response;
@@ -22,9 +22,9 @@ export const getLowStockAPI = async () => {
   return response;
 };
 
-// Orders
-export const getAllOrdersAPI = async () => {
-  const response = await api.get("/orders/my-orders");
+// ─── Orders ────────────────────────────────────────────────────────────────────
+export const getAllOrdersAPI = async (params) => {
+  const response = await api.get("/orders/my-orders", { params });
   return response;
 };
 
@@ -33,9 +33,10 @@ export const updateOrderStatusAPI = async (orderId, status, trackingNumber) => {
   return response;
 };
 
-// Products
-export const getProductsAPI = async () => {
-  const response = await api.get("/products");
+// ─── Products ──────────────────────────────────────────────────────────────────
+// ✅ FIXED: accepts params object so page/limit/search are passed correctly
+export const getProductsAPI = async (params = {}) => {
+  const response = await api.get("/products", { params });
   return response;
 };
 
@@ -49,7 +50,6 @@ export const updateProductAPI = async (id, data) => {
   return response;
 };
 
-// Upload product images (admin)
 export const uploadImagesAPI = async (id, formData) => {
   const response = await api.post(`/products/${id}/images`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -62,9 +62,9 @@ export const deleteProductAPI = async (id) => {
   return response;
 };
 
-// Users
-export const getAllUsersAPI = async () => {
-  const response = await api.get("/users");
+// ─── Users ─────────────────────────────────────────────────────────────────────
+export const getAllUsersAPI = async (params) => {
+  const response = await api.get("/users", { params });
   return response;
 };
 
@@ -78,7 +78,7 @@ export const deleteUserAdminAPI = async (id) => {
   return response;
 };
 
-// Coupons
+// ─── Coupons ───────────────────────────────────────────────────────────────────
 export const getCouponsAPI = async () => {
   const response = await api.get("/coupons");
   return response;
@@ -99,19 +99,23 @@ export const deleteCouponAPI = async (id) => {
   return response;
 };
 
-// Banners
+// ─── Banners ───────────────────────────────────────────────────────────────────
 export const getAllBannersAPI = async () => {
   const response = await api.get("/banners/all");
   return response;
 };
 
 export const createBannerAPI = async (data) => {
-  const response = await api.post("/banners", data);
+  const response = await api.post("/banners", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response;
 };
 
 export const updateBannerAPI = async (id, data) => {
-  const response = await api.put(`/banners/${id}`, data);
+  const response = await api.put(`/banners/${id}`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response;
 };
 
@@ -120,7 +124,7 @@ export const deleteBannerAPI = async (id) => {
   return response;
 };
 
-// Categories
+// ─── Categories ────────────────────────────────────────────────────────────────
 export const getCategoriesAPI = async () => {
   const response = await api.get("/categories");
   return response;
@@ -131,6 +135,7 @@ export const createCategoryAPI = async (data) => {
   return response;
 };
 
+// ✅ ADDED: was missing — used in CategorySection edit
 export const updateCategoryAPI = async (id, data) => {
   const response = await api.put(`/categories/${id}`, data);
   return response;
@@ -141,7 +146,7 @@ export const deleteCategoryAPI = async (id) => {
   return response;
 };
 
-// Collections
+// ─── Collections ───────────────────────────────────────────────────────────────
 export const getCollectionsAPI = async () => {
   const response = await api.get("/collections");
   return response;
@@ -152,6 +157,7 @@ export const createCollectionAPI = async (data) => {
   return response;
 };
 
+// ✅ ADDED: was missing — used in CollectionsSection edit
 export const updateCollectionAPI = async (id, data) => {
   const response = await api.put(`/collections/${id}`, data);
   return response;
@@ -162,7 +168,7 @@ export const deleteCollectionAPI = async (id) => {
   return response;
 };
 
-// Reviews
+// ─── Reviews ───────────────────────────────────────────────────────────────────
 export const getAllReviewsAPI = async (params) => {
   const response = await api.get("/reviews", { params });
   return response;
@@ -173,7 +179,7 @@ export const updateReviewStatusAPI = async (id, status) => {
   return response;
 };
 
-// Newsletter
+// ─── Newsletter / Subscribers ──────────────────────────────────────────────────
 export const getSubscribersAPI = async () => {
   const response = await api.get("/subscribers");
   return response;

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setOrders, setCurrentOrder, setLoading, setError, clearCurrentOrder } from "../store/slices/orderSlice";
-import { getMyOrdersAPI ,getOrderByIdAPI} from "../services/orderService";
+import { getMyOrdersAPI, getOrderByIdAPI, cancelOrderAPI } from "../services/orderService";
 
 const useOrders = () => {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ const useOrders = () => {
   const cancelOrder = async (id) => {
     dispatch(setLoading(true));
     try {
-      const response = await orderService.cancelOrder(id);
+      const response = await cancelOrderAPI(id);
       if (response.success) {
         await fetchMyOrders();
         return response;

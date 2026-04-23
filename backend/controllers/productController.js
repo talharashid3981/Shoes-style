@@ -290,7 +290,7 @@ export const uploadProductImages = async (req, res) => {
 // @route   GET /api/products/:id/related
 export const getRelatedProducts = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).select('categories');
+    const product = await Product.findOne(buildIdOrSlugQuery(req.params.id)).select('categories');
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }

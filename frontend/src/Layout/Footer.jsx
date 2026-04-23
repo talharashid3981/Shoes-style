@@ -46,11 +46,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                <span>+91 1234567890</span>
+                <span>+92 300 1234567</span>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                <span>Mumbai, India</span>
+                <span>Lahore, Pakistan</span>
               </li>
             </ul>
             <div className="flex space-x-4 mt-4">

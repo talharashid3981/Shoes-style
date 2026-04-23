@@ -1,22 +1,34 @@
+import mongoose from 'mongoose';
 import Review from '../models/Review.js';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 
-// ✅ FIX #6: Safe rating recalculation — handles 0 reviews (avoids NaN)
 const recalculateProductRating = async (productId) => {
   const product = await Product.findById(productId);
   if (!product) return;
 
-  const allReviews = await Review.find({ product: productId, status: 'approved' });
-  const numReviews = allReviews.length;
+  const approvedReviews = await Review.find({ product: productId, status: 'approved' });
+  const numReviews = approvedReviews.length;
   const avgRating =
     numReviews > 0
-      ? allReviews.reduce((acc, r) => acc + r.rating, 0) / numReviews
+      ? approvedReviews.reduce((acc, r) => acc + r.rating, 0) / numReviews
       : 0;
 
-  product.rating = Math.round(avgRating * 10) / 10; // round to 1 decimal
+  product.rating = Math.round(avgRating * 10) / 10;
   product.numReviews = numReviews;
   await product.save();
+};
+
+const resolveProductId = async (productParam) => {
+  if (!productParam) return null;
+
+  if (mongoose.Types.ObjectId.isValid(productParam)) {
+    const byId = await Product.findById(productParam).select('_id');
+    if (byId) return byId._id;
+  }
+
+  const bySlug = await Product.findOne({ slug: productParam }).select('_id');
+  return bySlug?._id || null;
 };
 
 // @desc    Create product review
@@ -25,20 +37,25 @@ export const createReview = async (req, res) => {
   try {
     const { product, rating, title, comment, images } = req.body;
 
-    const existing = await Review.findOne({ user: req.user._id, product });
+    const productId = await resolveProductId(product);
+    if (!productId) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    const existing = await Review.findOne({ user: req.user._id, product: productId });
     if (existing) {
       return res.status(400).json({ success: false, message: 'You have already reviewed this product' });
     }
 
     const order = await Order.findOne({
       user: req.user._id,
-      'items.product': product,
+      'items.product': productId,
       orderStatus: 'delivered',
     });
 
     const review = new Review({
       user: req.user._id,
-      product,
+      product: productId,
       rating,
       title,
       comment,
@@ -47,9 +64,7 @@ export const createReview = async (req, res) => {
     });
 
     const created = await review.save();
-
-    // ✅ FIX #6: Use safe helper
-    await recalculateProductRating(product);
+    await recalculateProductRating(productId);
 
     res.status(201).json({ success: true, data: created });
   } catch (error) {
@@ -61,14 +76,43 @@ export const createReview = async (req, res) => {
 // @route   GET /api/reviews/product/:productId
 export const getProductReviews = async (req, res) => {
   try {
+    const productId = await resolveProductId(req.params.productId);
+    if (!productId) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
     const reviews = await Review.find({
-      product: req.params.productId,
+      product: productId,
       status: 'approved',
     })
       .populate('user', 'name avatar')
       .sort('-createdAt');
 
     res.json({ success: true, count: reviews.length, data: reviews });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Get current user's review for product
+// @route   GET /api/reviews/product/:productId/my-review
+export const getMyProductReview = async (req, res) => {
+  try {
+    if (!req.user?._id) {
+      return res.json({ success: true, data: null });
+    }
+
+    const productId = await resolveProductId(req.params.productId);
+    if (!productId) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    const review = await Review.findOne({
+      user: req.user._id,
+      product: productId,
+    }).sort('-createdAt');
+
+    res.json({ success: true, data: review || null });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -106,8 +150,7 @@ export const updateReviewStatus = async (req, res) => {
     review.status = status;
     await review.save();
 
-    // ✅ FIX #6: Use safe helper after status change
-    if (status === 'approved' || status === 'rejected') {
+    if (status === 'approved' || status === 'rejected' || status === 'pending') {
       await recalculateProductRating(review.product);
     }
 
@@ -148,14 +191,14 @@ export const voteReview = async (req, res) => {
     }
 
     const existingVote = review.votedBy.find(
-      v => v.user.toString() === req.user._id.toString()
+      (v) => v.user.toString() === req.user._id.toString()
     );
 
     if (existingVote) {
       if (existingVote.vote === 'helpful') review.helpfulVotes -= 1;
       else review.unhelpfulVotes -= 1;
       review.votedBy = review.votedBy.filter(
-        v => v.user.toString() !== req.user._id.toString()
+        (v) => v.user.toString() !== req.user._id.toString()
       );
     }
 
@@ -183,7 +226,7 @@ export const uploadReviewImages = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
 
-    const images = files.map(file => ({
+    const images = files.map((file) => ({
       url: file.path,
       publicId: file.filename,
     }));

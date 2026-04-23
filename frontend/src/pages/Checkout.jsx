@@ -20,7 +20,7 @@ const Checkout = () => {
     city: '',
     state: '',
     postalCode: '',
-    country: 'India',
+    country: 'Pakistan',
     phone: user?.addresses?.[0]?.phone || '',
   });
 
@@ -293,34 +293,34 @@ const Checkout = () => {
                       <p className="text-xs text-gray-500">{item.variant?.color} / {item.variant?.size}</p>
                       <p className="text-xs">Qty: {item.quantity}</p>
                     </div>
-                    <p className="text-sm font-medium">₹{item.price * item.quantity}</p>
+                    <p className="text-sm font-medium">Rs. {item.price * item.quantity}</p>
                   </div>
                 ))}
               </div>
 
               <div className="border-t border-gray-200 pt-4 space-y-2">
-                <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-gray-600"> 
                   <span>Subtotal ({totalItems} items)</span>
-                  <span>₹{subtotal.toFixed(2)}</span>
+                  <span>Rs. {subtotal.toFixed(2)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Discount</span>
-                    <span>-₹{discount.toFixed(2)}</span>
+                    <span>-Rs.{discount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
+                  <span>{shipping === 0 ? 'Free' : `Rs. ${shipping}`}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax (18% GST)</span>
-                  <span>₹{tax.toFixed(2)}</span>
+                  <span>Rs. {tax.toFixed(2)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-2">
                   <div className="flex justify-between text-xl font-bold text-gray-900">
                     <span>Total</span>
-                    <span>₹{finalTotal.toFixed(2)}</span>
+                    <span>Rs. {finalTotal.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -332,7 +332,7 @@ const Checkout = () => {
                 </div>
                 <div className="bg-gray-50 p-3 rounded-lg flex items-center gap-2">
                   <Truck className="w-5 h-5 text-gray-600" />
-                  <span className="text-sm">Free shipping on orders above ₹500</span>
+                  <span className="text-sm">Free shipping on orders above Rs. 500</span>
                 </div>
               </div>
 

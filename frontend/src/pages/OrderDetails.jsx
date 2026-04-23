@@ -121,7 +121,7 @@ const OrderDetails = () => {
                   className="w-20 h-20 object-cover rounded"
                 />
                 <div className="flex-1">
-                  <Link to={`/products/${item.productId}`} className="font-medium text-gray-900 hover:underline">
+                  <Link to={`/products/${item.product}`} className="font-medium text-gray-900 hover:underline">
                     {item.name}
                   </Link>
                   <p className="text-sm text-gray-500 mt-1">
@@ -129,7 +129,7 @@ const OrderDetails = () => {
                   </p>
                   <div className="flex justify-between mt-2">
                     <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-                    <p className="font-medium">₹{item.price * item.quantity}</p>
+                    <p className="font-medium">Rs. {item.price * item.quantity}</p>
                   </div>
                 </div>
               </div>
@@ -164,26 +164,26 @@ const OrderDetails = () => {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span>₹{currentOrder.subtotal?.toFixed(2)}</span>
+                <span>Rs. {currentOrder.subtotal?.toFixed(2)}</span>
               </div>
               {currentOrder.discount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount</span>
-                  <span>-₹{currentOrder.discount?.toFixed(2)}</span>
+                  <span>-Rs. {currentOrder.discount?.toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
-                <span>{currentOrder.shippingCost === 0 ? 'Free' : `₹${currentOrder.shippingCost}`}</span>
+                <span>{currentOrder.shippingCost === 0 ? 'Free' : `Rs. ${currentOrder.shippingCost}`}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Tax (18% GST)</span>
-                <span>₹{currentOrder.tax?.toFixed(2)}</span>
+                <span>Rs. {currentOrder.tax?.toFixed(2)}</span>
               </div>
               <div className="border-t border-gray-200 pt-2 mt-2">
                 <div className="flex justify-between text-xl font-bold text-gray-900">
                   <span>Total</span>
-                  <span>₹{currentOrder.total?.toFixed(2)}</span>
+                  <span>Rs. {currentOrder.total?.toFixed(2)}</span>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-gray-200">

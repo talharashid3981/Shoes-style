@@ -16,7 +16,7 @@ export const getProductByIdAPI = async (id) => {
 
 // Get related products
 export const getRelatedProductsAPI = async (id) => {
-  const response = await api.get(`/products/${id}/related`);
+  const response = await api.get(`/products/related/${id}`);
   return response;
 };
 

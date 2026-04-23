@@ -20,6 +20,8 @@ router.route('/')
   .post(protect, admin, upload.array('images', 10), createProduct);
 
 router.get('/related/:id', getRelatedProducts);
+// Backward-compatible alias used by some frontend builds
+router.get('/:id/related', getRelatedProducts);
 
 router.route('/:id')
   .get(getProductById)

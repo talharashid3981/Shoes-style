@@ -1,36 +1,29 @@
-// src/services/wishlist.service.js
 import api from "./api";
 
 // Get wishlist
 export const getWishlistAPI = async () => {
-  const response = await api.get("/wishlist");
-  return response;
+  return api.get("/wishlist");
 };
 
 // Add to wishlist
-export const addToWishlistAPI = async (productId) => {
-  const response = await api.post("/wishlist", { productId });
-  return response;
+export const addToWishlistAPI = async (productId, variant = undefined) => {
+  return api.post("/wishlist", { productId, variant });
 };
 
 // Remove from wishlist
-export const removeFromWishlistAPI = async (productId) => {
-  const response = await api.delete(`/wishlist/${productId}`);
-  return response;
+export const removeFromWishlistAPI = async (itemId) => {
+  return api.delete(`/wishlist/${itemId}`);
 };
 
 // Clear wishlist
 export const clearWishlistAPI = async () => {
-  const response = await api.delete("/wishlist");
-  return response;
+  return api.delete("/wishlist");
 };
 
-// Move to cart
-export const moveToCartAPI = async (productId, variant, quantity) => {
-  const response = await api.post("/wishlist/move-to-cart", {
-    productId,
-    variant,
-    quantity,
-  });
-  return response;
+// Check if product/variant exists in wishlist
+export const checkWishlistItemAPI = async (productId, variant = undefined) => {
+  const params = {};
+  if (variant?.color) params.color = variant.color;
+  if (variant?.size) params.size = variant.size;
+  return api.get(`/wishlist/check/${productId}`, { params });
 };

@@ -34,9 +34,7 @@ const useAuth = () => {
   // ✅ Log In (FIXED)
   const logIn = async ({ email, password }) => {
     try {
-      console.log("login hook function try call")
       const  data  = await loginAPI({ email, password });
-      console.log(data ,"at hook")
       if (data.success) {
         dispatch(setUser(data.user));
         dispatch(setProfile(data.user));
@@ -45,7 +43,6 @@ const useAuth = () => {
 
       throw new Error(data.message);
     } catch (error) {
-      console.log("login hook function catch run")
       throw error?.response?.data?.message || error.message;
     }
   };

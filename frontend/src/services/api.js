@@ -2,19 +2,31 @@ import axios from 'axios';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  baseURL: 'https://aih-nyt8.onrender.com' || 'http://localhost:8000/api',
   withCredentials: true, // Required for httpOnly cookies
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 // Request interceptor - can add auth headers here if needed
 api.interceptors.request.use(
   (config) => {
+    const method = (config.method || 'get').toLowerCase();
+
+    // Let the browser set multipart boundary automatically for FormData.
+    if (config.data instanceof FormData) {
+      if (config.headers) {
+        delete config.headers['Content-Type'];
+        delete config.headers['content-type'];
+      }
+    } else if (method !== 'get' && method !== 'head') {
+      config.headers = config.headers || {};
+      if (!config.headers['Content-Type'] && !config.headers['content-type']) {
+        config.headers['Content-Type'] = 'application/json';
+      }
+    }
+
     // No need to manually add JWT token - it's in httpOnly cookie
     // Add timestamp to prevent caching
-    if (config.method === 'get') {
+    if (method === 'get') {
       config.params = { ...config.params, _t: Date.now() };
     }
     return config;

@@ -14,12 +14,28 @@ const Wishlist = () => {
     fetchWishlist();
   }, []);
 
+  const resolveCartVariant = (item) => {
+    if (item.variant?.color && item.variant?.size) {
+      return item.variant;
+    }
+    const fallbackColor = item.product?.variants?.[0];
+    const fallbackSize = fallbackColor?.sizes?.find((s) => s.stock > 0) || fallbackColor?.sizes?.[0];
+    if (!fallbackColor?.color || !fallbackSize?.size) {
+      return null;
+    }
+    return { color: fallbackColor.color, size: fallbackSize.size };
+  };
+
   const handleMoveToCart = async (item) => {
     setAddingToCart(item._id);
     try {
-      const variant = item.variant || { color: 'Default', size: 'M' };
+      const variant = resolveCartVariant(item);
+      if (!variant) {
+        Toast('This product variant is unavailable for cart', 'warning');
+        return;
+      }
       await addToCart(item.product._id, variant, 1);
-      await removeFromWishlist(item.product._id);
+      await removeFromWishlist(item._id);
       Toast('Moved to cart successfully!', 'success');
     } catch (error) {
       Toast(error.message || 'Failed to move to cart', 'error');
@@ -28,9 +44,9 @@ const Wishlist = () => {
     }
   };
 
-  const handleRemove = async (productId) => {
+  const handleRemove = async (itemId) => {
     try {
-      await removeFromWishlist(productId);
+      await removeFromWishlist(itemId);
       Toast('Removed from wishlist', 'success');
     } catch (error) {
       Toast(error.message || 'Failed to remove', 'error');
@@ -76,7 +92,7 @@ const Wishlist = () => {
     <div className="min-h-screen pt-24 pb-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Wishlist ({count} items)</h1>
+          <h1 className="text-3xl font-bold text-gray-900">My Wishlist ({count || items.length} items)</h1>
           <button
             onClick={handleClearAll}
             className="text-red-600 hover:text-red-700 text-sm font-medium"
@@ -120,9 +136,9 @@ const Wishlist = () => {
                   <p className="text-xs text-gray-500 mt-1">{variantText}</p>
                   
                   <div className="mt-2 flex items-center space-x-2">
-                    <span className="text-lg font-semibold text-gray-900">₹{product.price}</span>
+                    <span className="text-lg font-semibold text-gray-900">Rs. {product.price}</span>
                     {product.compareAtPrice && (
-                      <span className="text-sm text-gray-500 line-through">₹{product.compareAtPrice}</span>
+                      <span className="text-sm text-gray-500 line-through">Rs. {product.compareAtPrice}</span>
                     )}
                   </div>
 
@@ -147,7 +163,7 @@ const Wishlist = () => {
                       {addingToCart === item._id ? 'Moving...' : 'Move to Cart'}
                     </button>
                     <button
-                      onClick={() => handleRemove(product._id)}
+                      onClick={() => handleRemove(item._id)}
                       className="p-2 border border-gray-300 rounded-lg hover:border-red-300 hover:text-red-500 transition"
                     >
                       <Trash2 className="w-4 h-4" />

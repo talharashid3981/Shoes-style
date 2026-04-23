@@ -147,8 +147,8 @@ const Cart = () => {
                       </button>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">₹{item.price * item.quantity}</p>
-                      <p className="text-sm text-gray-500">₹{item.price} each</p>
+                      <p className="font-semibold text-gray-900">Rs. {(item.price * item.quantity).toLocaleString()}</p>
+                      <p className="text-sm text-gray-500">Rs. {item.price} each</p>
                     </div>
                   </div>
                 </div>
@@ -197,26 +197,26 @@ const Cart = () => {
               <div className="space-y-3 border-t border-gray-200 pt-4">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>₹{subtotal.toFixed(2)}</span>
+                  <span>Rs. {subtotal.toFixed(2)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Discount</span>
-                    <span>-₹{discount.toFixed(2)}</span>
+                    <span>-Rs. {discount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
+                  <span>{shipping === 0 ? 'Free' : `Rs. ${shipping}`}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax (18% GST)</span>
-                  <span>₹{tax.toFixed(2)}</span>
+                  <span>Rs. {tax.toFixed(2)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-xl font-bold text-gray-900">
                     <span>Total</span>
-                    <span>₹{finalTotal.toFixed(2)}</span>
+                    <span>Rs. {finalTotal.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
